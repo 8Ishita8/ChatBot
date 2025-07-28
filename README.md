@@ -80,7 +80,8 @@ Or simply drag and drop `index.html` into your browser window.
 
 ## Screenshots
 
->
+> <img width="940" height="972" alt="image" src="https://github.com/user-attachments/assets/231fc52f-4cab-44ca-ab01-23e296e8b7d6" />
+
 
 ---
 
