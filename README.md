@@ -105,6 +105,6 @@ Or simply drag and drop `index.html` into your browser window.
 ## 🔒 License
 
 This project is **private and not licensed for redistribution or commercial use**.
-Please **do not copy, clone, or distribute** without permission.
+Please do not copy, clone, or distribute without permission.
 
 ---
