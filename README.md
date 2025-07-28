@@ -1,7 +1,7 @@
 # ChatFriend 🧸💬
 
-**ChatFriend** is a friendly, animated AI chatbot powered by **FastAPI** and **Mistral-7B-Instruct via Ollama**.
-It runs **locally** and requires **no API keys** — *free of cost hehe ;>* 🎉
+<br> **ChatFriend** is a friendly, animated AI chatbot powered by **FastAPI** and **Mistral-7B-Instruct via Ollama**. </br>
+<br> It runs **locally** and requires **no API keys** — *free of cost hehe ;>* 🎉 </br>
 
 ---
 
@@ -87,8 +87,8 @@ Or simply drag and drop `index.html` into your browser window.
 
 ## Author 
 
-Made with love by **Ishita Pradhan**
-Let’s build fun, free, and friendly AI ✨
+<br> Made with love by **Ishita Pradhan** 🩷 </br>
+<br> Let’s build fun, free, and friendly AI ✨ </br>
 
 ---
 
