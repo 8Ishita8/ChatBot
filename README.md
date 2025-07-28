@@ -88,7 +88,7 @@ Or simply drag and drop `index.html` into your browser window.
 ## Author 
 
 <br> Made with love by **Ishita Pradhan** 🩷 </br>
-<br> Let’s build fun, free, and friendly AI ✨ </br>
+<br> GitHub: https://github.com/8Ishita8 </br>
 
 ---
 
