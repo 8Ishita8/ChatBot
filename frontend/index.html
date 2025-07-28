@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ChatFriend</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #ffeef4;
+      flex-direction: column;
+    }
+
+    .container {
+      width: 350px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header-container {
+      background-color: #ffb6c1;
+      color: white;
+      width: 100%;
+      text-align: center;
+      padding: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      border-radius: 5px 5px 0 0;
+    }
+
+    .chat-container {
+      width: 100%;
+      background-color: white;
+      border: 2px solid #f8c9d8;
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      height: 400px;
+      background-image: url('https://images.unsplash.com/photo-1618538660695-3b42fbaa8dff?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .messages {
+      flex-grow: 1;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      padding-right: 5px;
+    }
+
+    .input-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 5px;
+    }
+
+    #chatInput {
+      flex: 1;
+      padding: 6px;
+      border-radius: 5px;
+      border: 1px solid #f4b8c6;
+    }
+
+    #sendButton, #clearButton {
+      padding: 6px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+    }
+
+    #sendButton {
+      background-color: #ec709c;
+    }
+
+    #sendButton:hover {
+      background-color: #e75a8c;
+    }
+    #clearButton {
+     background-color: #6ec1e4; 
+     color: white;
+    }
+
+    #clearButton:hover {
+        background-color: #4fa3d1; 
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-start;
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 5px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .user {
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .user .avatar {
+      margin-left: 8px;
+      margin-right: 0;
+      background-image: url('https://images.unsplash.com/photo-1486639107311-064febaff1c5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjB8fGZsb3dlcnxlbnwwfHwwfHx8MA%3D%3D');
+    }
+
+    .bot .avatar {
+      margin-right: 8px;
+      margin-left: 0;
+      background-image: url('https://plus.unsplash.com/premium_photo-1730051168806-d2e135f93361?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    }
+
+    .text {
+      max-width: 75%;
+      word-wrap: break-word;
+      padding: 8px;
+      border-radius: 5px;
+    }
+
+    .user .text {
+      background-color: #f8a8b8;
+      color: white;
+      text-align: right;
+      margin-left: auto;
+    }
+
+    .bot .text {
+      background-color: #fce4ec;
+      color: black;
+      text-align: left;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .bouncing {
+      animation: bounce 0.6s infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header-container">ChatFriend</div>
+
+    <div class="chat-container">
+      <div class="messages" id="messages"></div>
+      <div class="input-container">
+        <button id="clearButton">Clear</button>
+        <input type="text" id="chatInput" placeholder="Type a message..." />
+        <button id="sendButton">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const sendButton = document.getElementById('sendButton');
+    const chatInput = document.getElementById('chatInput');
+    const messagesDiv = document.getElementById('messages');
+
+    sendButton.addEventListener('click', handleSend);
+    chatInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleSend();
+    });
+
+    document.getElementById('clearButton').addEventListener('click', () => {
+      messagesDiv.innerHTML = '';
+    });
+
+    async function handleSend() {
+      const userInput = chatInput.value.trim();
+      if (!userInput) return;
+
+      chatInput.value = "";
+      chatInput.focus();
+
+      const userMsgElement = addMessage(userInput, 'user');
+      const typingMsg = addMessage("Bot is typing...", 'bot', true);
+      setBotAvatarAnimation(true);
+
+      try {
+        const res = await fetch("http://localhost:5010/chat", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userInput })
+        });
+
+        const data = await res.json();
+
+        if (data.user_message && data.user_message !== userInput) {
+          userMsgElement.querySelector('.text').textContent = data.user_message;
+        }
+
+        setTimeout(() => {
+          removeMessage(typingMsg);
+          addMessage(data.response || "Sorry, I didn’t get that.", 'bot');
+          setBotAvatarAnimation(false);
+        }, 800);
+      } catch (err) {
+        removeMessage(typingMsg);
+        addMessage("Error: Unable to reach server.", 'bot');
+        setBotAvatarAnimation(false);
+        console.error("Fetch failed:", err);
+      }
+    }
+
+    function addMessage(message, sender, isTemp = false) {
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('message', sender);
+      if (isTemp) wrapper.dataset.temp = "true";
+
+      const avatar = document.createElement('div');
+      avatar.classList.add('avatar');
+      if (sender === 'bot' && isTemp) avatar.classList.add('bouncing');
+
+      const text = document.createElement('div');
+      text.classList.add('text');
+      text.textContent = message;
+
+      wrapper.appendChild(avatar);
+      wrapper.appendChild(text);
+      messagesDiv.appendChild(wrapper);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+      return wrapper;
+    }
+
+    function removeMessage(element) {
+      if (element && element.parentNode) {
+        element.parentNode.removeChild(element);
+      }
+    }
+
+    function setBotAvatarAnimation(active) {
+      const avatars = document.querySelectorAll('.message.bot[data-temp="true"] .avatar');
+      avatars.forEach(avatar => {
+        if (active) {
+          avatar.classList.add('bouncing');
+        } else {
+          avatar.classList.remove('bouncing');
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
